@@ -1,4 +1,3 @@
-using System;
 using CommandLine;
 using CommandLine.Text;
 
@@ -55,8 +54,68 @@ namespace Weather
 
         private static void Run(Options options)
         {
-            Console.WriteLine($"Location: {options.Location}");
-            Console.WriteLine($"Type:     {options.Type}");
+            var places = Geolocation.Geolocate(options.Location, 10);
+
+            // variables to save forecast location
+            double lat = 0;
+            double lon = 0;
+
+            // check if there were any results (non empty list)
+            // TODO: make this better
+            if (places.Count == 0)
+            {
+                Console.WriteLine("NO PLACES WERE FOUND");
+            }
+
+            // only one location matching --location parameter
+            if (places.Count == 1)
+            {
+                lat = places[0].lat;
+                lon = places[0].lon;
+            }
+
+            // if there is more than one place
+            // display selection screen
+            if (places.Count > 1)
+            {
+                Console.WriteLine("Select a location:");
+                int index = 1;
+                foreach (var item in places)
+                {
+                    Console.Write($"{index} City: {item.name}, State: {item.state}, Country: {item.country}\n");
+                    index += 1;
+                }
+
+                // get user input and check bounds
+                string input;
+                int selection;
+                bool loop = true;
+
+                do
+                {
+                    input = Console.ReadLine();
+                    
+                    if(!Int32.TryParse(input, out selection))
+                    {
+                        Console.WriteLine("not a number!!!");
+                    }
+                    else if (selection > places.Count || selection <= 0)
+                    {
+                        Console.WriteLine("Selection out of bounds");
+                    }
+                    else
+                    {
+                        lat = places[selection-1].lat;
+                        lon = places[selection-1].lon;
+
+                        loop = false;
+                    }
+
+                }while(loop);
+
+                Weather.Forecast(lat,lon);
+
+            }
         }
     }
 
