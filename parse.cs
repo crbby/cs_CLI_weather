@@ -11,18 +11,23 @@ namespace Weather
         {
             private readonly string location;
             private readonly char type;
+            private readonly char units;
 
-            public Options(string location, char type)
+            public Options(string location, char type, char units)
             {
                 this.location = location;
                 this.type = type;
+                this.units = units;
             }
 
             [Option('l', Required = true, HelpText = "Location of the forceast")]
             public string Location { get { return location; } }
 
-            [Option('t', Required = false, HelpText = "Type of the forecast: d - daily, w - weekly, m - monthly")]
+            [Option('t', Required = false, HelpText = "Type of the forecast: d - daily, w - weekly, m - monthly", Default = (char)'d')]
             public char Type { get { return type; } }
+
+            [Option('u', Required = false, HelpText = "Units of the forecast: m - metric, i - imperial", Default = (char)'m')]
+            public char Units { get { return units; } }
         }
 
         static void Main(string[] args)
