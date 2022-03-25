@@ -217,7 +217,7 @@ namespace Weather
                 Console.WriteLine($"no of hourly samples: {weatherHourly.list.Count}");
                 Console.WriteLine($"no of daily samples: {weatherDaily.list.Count}");
                 */
-                
+
                 ConvertForecast('c');
             }
         }
@@ -233,21 +233,21 @@ namespace Weather
                 case 'c':
                     {
                         // CURRENT
-                        weatherCurrent.temp = weatherCurrent.temp - 273.15f;
+                        weatherCurrent.temp = (float)Math.Round(weatherCurrent.temp - 273.15f, 1);
 
                         // HOURLY
                         foreach (var forecast in weatherHourly.list)
                         {
-                            forecast.temp = forecast.temp - 273.15f;
+                            forecast.temp = (float)Math.Round(forecast.temp - 273.15f, 1);
                         }
 
                         // DAILY
                         foreach (var forecast in weatherDaily.list)
                         {
-                            forecast.temp_day = forecast.temp_day - 273.15f;
-                            forecast.temp_night = forecast.temp_night - 273.15f;
-                            forecast.temp_min = forecast.temp_min - 273.15f;
-                            forecast.temp_max = forecast.temp_max - 273.15f;
+                            forecast.temp_day = (float)Math.Round(forecast.temp_day - 273.15f, 1);
+                            forecast.temp_night = (float)Math.Round(forecast.temp_night - 273.15f, 1);
+                            forecast.temp_min = (float)Math.Round(forecast.temp_min - 273.15f, 1);
+                            forecast.temp_max = (float)Math.Round(forecast.temp_max - 273.15f, 1);
                         }
 
                         break;
@@ -256,21 +256,21 @@ namespace Weather
                 case 'f':
                     {
                         // CURRENT
-                        weatherCurrent.temp = 1.8f * (273.15f - weatherCurrent.temp) + 32f;
+                        weatherCurrent.temp = (float)Math.Round(1.8f * (273.15f - weatherCurrent.temp) + 32f, 1);
 
                         // HOURLY
                         foreach (var forecast in weatherHourly.list)
                         {
-                            forecast.temp = 1.8f * (273.15f - forecast.temp) + 32f;
+                            forecast.temp = (float)Math.Round(1.8f * (273.15f - forecast.temp) + 32f, 1);
                         }
 
                         // DAILY
                         foreach (var forecast in weatherDaily.list)
                         {
-                            forecast.temp_day = 1.8f * (273.15f - forecast.temp_day) + 32f;
-                            forecast.temp_night = 1.8f * (273.15f - forecast.temp_night) + 32f;
-                            forecast.temp_min = 1.8f * (273.15f - forecast.temp_min) + 32f;
-                            forecast.temp_max = 1.8f * (273.15f - forecast.temp_max) + 32f;
+                            forecast.temp_day = (float)Math.Round(1.8f * (273.15f - forecast.temp_day) + 32f, 1);
+                            forecast.temp_night = (float)Math.Round(1.8f * (273.15f - forecast.temp_night) + 32f, 1);
+                            forecast.temp_min = (float)Math.Round(1.8f * (273.15f - forecast.temp_min) + 32f, 1);
+                            forecast.temp_max = (float)Math.Round(1.8f * (273.15f - forecast.temp_max) + 32f, 1);
                         }
 
                         break;
