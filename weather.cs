@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Weather
 {
     // TODO: THIS ONE IS IMPORTANT FOR REAL THO
-    // USE CONSTRUCTORS FOR CLASSES FFS XDddd
+    // USE CONSTRUCTORS FOR CLASSES
 
     public class Weather
     {
