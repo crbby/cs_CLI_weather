@@ -1,16 +1,18 @@
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
-using System.ComponentModel;
 
 namespace Weather
 {
     // TODO: THIS ONE IS IMPORTANT FOR REAL THO
     // USE CONSTRUCTORS FOR CLASSES FFS XDddd
-    
-    class Weather
+
+    public class Weather
     {
         public class WeatherCurrent
         {
+            // NON JSON FIELDS
+            public DateTime datetime { get; set; }
+
             // root
             public double lat { get; set; }
             public double lon { get; set; }
@@ -18,7 +20,7 @@ namespace Weather
             public int timezone_offset { get; set; }
 
             // current
-            public int current_time { get; set; }
+            public int current_time_unix { get; set; }
             public int sunset { get; set; }
             public int sunrise { get; set; }
             public float temp { get; set; }
@@ -42,13 +44,13 @@ namespace Weather
 
         public class WeatherCurrentExtended : WeatherCurrent
         {
-            public float temp_day {get; set;}
-            public float temp_night {get; set;}
-            public float temp_min {get; set;}
-            public float temp_max {get; set;}
+            public float temp_day { get; set; }
+            public float temp_night { get; set; }
+            public float temp_min { get; set; }
+            public float temp_max { get; set; }
 
-            public float feels_like_day {get;set;}
-            public float feels_like_night {get;set;}           
+            public float feels_like_day { get; set; }
+            public float feels_like_night { get; set; }
         }
 
         public class WeatherHourly
@@ -71,13 +73,23 @@ namespace Weather
             }
         }
 
-        public static void Forecast(double lat, double lon)
+        public WeatherCurrent weatherCurrent { get; set; }
+        public WeatherHourly weatherHourly { get; set; }
+        public WeatherDaily weatherDaily { get; set; }
+
+        public Weather(double lat, double lon)
+        {
+            weatherCurrent = new WeatherCurrent();
+            weatherHourly = new WeatherHourly();
+            weatherDaily = new WeatherDaily();
+
+            Forecast(lat,lon);
+        }
+
+        // TODO: parse alerts (alERt rCb SilNE WiAtRY)
+        public void Forecast(double lat, double lon)
         {
             string url = new String($"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,alerts&appid={Keys.API_key}");
-
-            var weatherCurrent = new WeatherCurrent();
-            var weatherHourly = new WeatherHourly();
-            var weatherDaily = new WeatherDaily();
 
             using (var client = new HttpClient())
             {
@@ -109,7 +121,7 @@ namespace Weather
                 weatherCurrent.timezone_offset = jsonPlaces.timezone_offset;
 
                 // current
-                weatherCurrent.current_time = jsonPlaces.current.dt;
+                weatherCurrent.current_time_unix = jsonPlaces.current.dt;
                 weatherCurrent.sunset = jsonPlaces.current.sunset;
                 weatherCurrent.sunrise = jsonPlaces.current.sunrise;
                 weatherCurrent.temp = jsonPlaces.current.temp;
@@ -139,7 +151,7 @@ namespace Weather
 
                     var newForecast = new WeatherCurrent();
 
-                    newForecast.current_time = forecast.dt;
+                    newForecast.current_time_unix = forecast.dt;
                     newForecast.temp = forecast.temp;
                     newForecast.feels_like = forecast.feels_like;
                     newForecast.pressure = forecast.pressure;
@@ -169,8 +181,8 @@ namespace Weather
 
                     var newForecast = new WeatherCurrentExtended();
 
-                    newForecast.current_time = forecast.dt;
-                    
+                    newForecast.current_time_unix = forecast.dt;
+
                     // temperature -> day/night/min/max
                     newForecast.temp_day = forecast.temp.day;
                     newForecast.temp_night = forecast.temp.night;
@@ -180,7 +192,7 @@ namespace Weather
                     // feels like -> day/night
                     newForecast.feels_like = forecast.feels_like.day;
                     newForecast.feels_like_night = forecast.feels_like.night;
-                    
+
                     newForecast.pressure = forecast.pressure;
                     newForecast.humidity = forecast.humidity;
                     newForecast.dew_point = forecast.dew_point;
@@ -200,10 +212,86 @@ namespace Weather
 
                     weatherDaily.list.Add(newForecast);
                 }
-                
+
                 Console.WriteLine($"no of hourly samples: {weatherHourly.list.Count}");
                 Console.WriteLine($"no of daily samples: {weatherDaily.list.Count}");
+
+                ConvertForecast('c');
             }
+        }
+
+        /// Convert Weather* objects 
+        /// unix time -> datetime
+        /// kelvin    -> degC / degF
+        private void ConvertForecast(char unit)
+        {
+            // convert deg kelvin to human readable format 
+            switch (unit)
+            {
+                case 'c':
+                    {
+                        // CURRENT
+                        weatherCurrent.temp = weatherCurrent.temp - 273.15f;
+
+                        // HOURLY
+                        foreach (var forecast in weatherHourly.list)
+                        {
+                            forecast.temp = forecast.temp - 273.15f;
+                        }
+
+                        // DAILY
+                        foreach (var forecast in weatherDaily.list)
+                        {
+                            forecast.temp = forecast.temp - 273.15f;
+                        }
+
+                        break;
+                    }
+
+                case 'f':
+                    {
+                        // CURRENT
+                        weatherCurrent.temp = 1.8f * (273.15f - weatherCurrent.temp) + 32f;
+
+                        // HOURLY
+                        foreach (var forecast in weatherHourly.list)
+                        {
+                            forecast.temp = 1.8f * (273.15f - forecast.temp) + 32f;
+                        }
+
+                        // DAILY
+                        foreach (var forecast in weatherDaily.list)
+                        {
+                            forecast.temp = 1.8f * (273.15f - forecast.temp) + 32f;
+                        }
+
+                        break;
+                    }
+            }
+
+            // convert unix timestamp to DateTime
+            weatherCurrent.datetime = UnixTimeStampToDateTime(weatherCurrent.current_time_unix);
+
+            // HOURLY
+            foreach (var forecast in weatherHourly.list)
+            {
+                forecast.datetime = UnixTimeStampToDateTime(forecast.current_time_unix);
+            }
+
+            // DAILY
+            foreach (var forecast in weatherDaily.list)
+            {
+                forecast.datetime = UnixTimeStampToDateTime(forecast.current_time_unix);
+            }
+        }
+
+        // from: https://stackoverflow.com/a/250400/13264796
+        public static DateTime UnixTimeStampToDateTime(int unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dateTime;
         }
     }
 }
