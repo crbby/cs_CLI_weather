@@ -3,7 +3,7 @@ A small CLI application to display current weather in a specified location.
 
 ## Features
 - various forecast types
-- designed in mind with OpenWeatherMap OneCal API
+- designed in mind with OpenWeatherMap OneCall API
 - direct geolocation with same API key
 - simple CLI syntax
 
