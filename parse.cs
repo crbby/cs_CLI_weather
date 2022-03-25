@@ -90,7 +90,7 @@ namespace Weather
                 do
                 {
                     input = Console.ReadLine();
-                    
+
                     if (!Int32.TryParse(input, out selection))
                     {
                         Console.WriteLine("not a number!!!");
@@ -114,7 +114,33 @@ namespace Weather
                 // : (
                 var forecast = new Weather(selectedPlace.lat, selectedPlace.lon);
 
+                switch (options.Type)
+                {
+                    case 'd':
+                        {
+                            Cli.printDaily(selectedPlace, forecast);
 
+                            break;
+                        }
+
+                    case 'w':
+                        {
+                            Cli.printWeekly(selectedPlace, forecast);
+                            break;
+                        }
+
+                    case 'm':
+                        {
+                            Cli.printMonthly(selectedPlace, forecast);
+                            break;
+                        }
+
+                    default:
+                        {
+                            Console.WriteLine("not supposed to be there lmao");
+                            break;
+                        }
+                }
             }
         }
     }
