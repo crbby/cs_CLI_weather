@@ -55,10 +55,7 @@ namespace Weather
         private static void Run(Options options)
         {
             var places = Geolocation.Geolocate(options.Location, 10);
-
-            // variables to save forecast location
-            double lat = 0;
-            double lon = 0;
+            var selectedPlace = new Geolocation.Place();
 
             // check if there were any results (non empty list)
             // TODO: make this better
@@ -70,8 +67,7 @@ namespace Weather
             // only one location matching --location parameter
             if (places.Count == 1)
             {
-                lat = places[0].lat;
-                lon = places[0].lon;
+                selectedPlace = places[0];
             }
 
             // if there is more than one place
@@ -95,7 +91,7 @@ namespace Weather
                 {
                     input = Console.ReadLine();
                     
-                    if(!Int32.TryParse(input, out selection))
+                    if (!Int32.TryParse(input, out selection))
                     {
                         Console.WriteLine("not a number!!!");
                     }
@@ -105,19 +101,19 @@ namespace Weather
                     }
                     else
                     {
-                        lat = places[selection-1].lat;
-                        lon = places[selection-1].lon;
+                        selectedPlace = places[selection - 1];
 
                         loop = false;
                     }
 
-                }while(loop);
+                } while (loop);
 
                 // i'd love for forecast to be static
                 // but it it really did not make much sense 
                 // yeah im not following func.prog. princibles
                 // : (
-                var forecast = new Weather(lat,lon);
+                var forecast = new Weather(selectedPlace.lat, selectedPlace.lon);
+
 
             }
         }
