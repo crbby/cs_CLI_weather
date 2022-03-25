@@ -42,3 +42,10 @@ weather -l "LOCATION" -t 'TYPE' -u 'UNITS'
 
 Use weather --help for more info
 ```
+
+## Used libraries:
+
+|Name               |NuGet                                                  |
+|---                |---                                                    |
+|Newtonsoft.Json    | https://www.nuget.org/packages/Newtonsoft.Json/       |
+|CommandLineParser  | https://www.nuget.org/packages/CommandLineParser/     |
