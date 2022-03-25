@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Weather
 {
-    internal class Geolocation
+    public class Geolocation
     {
         public class Place
         {
