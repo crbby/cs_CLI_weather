@@ -31,13 +31,13 @@ weather -l "LOCATION" -t 'TYPE' -u 'UNITS'
 -l (req) -> place to show forecast for, ex: "London"
 
 -t       -> type of forecast:
-            'c' : current
+            'c' : current (def)
             'd' : daily
             'w' : weekly
             'm' : monthly
 
 -u        -> units:
-            'm' : metric 
+            'm' : metric (def)
             'i' : imperial
 
 Use weather --help for more info
