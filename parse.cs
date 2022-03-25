@@ -22,7 +22,7 @@ namespace Weather
             [Option('l', Required = true, HelpText = "Location of the forceast")]
             public string Location { get { return location; } }
 
-            [Option('t', Required = false, HelpText = "Type of the forecast: d - daily, w - weekly, m - monthly", Default = (char)'d')]
+            [Option('t', Required = false, HelpText = "Type of the forecast: c - current, d - daily, w - weekly, m - monthly", Default = (char)'c')]
             public char Type { get { return type; } }
 
             [Option('u', Required = false, HelpText = "Units of the forecast: m - metric, i - imperial", Default = (char)'m')]
@@ -116,10 +116,15 @@ namespace Weather
 
                 switch (options.Type)
                 {
+                    case 'c':
+                        {
+                            Cli.printCurrent(selectedPlace, forecast);
+                            break;
+                        }
+
                     case 'd':
                         {
                             Cli.printDaily(selectedPlace, forecast);
-
                             break;
                         }
 
