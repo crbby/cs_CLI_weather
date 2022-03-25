@@ -83,7 +83,7 @@ namespace Weather
             weatherHourly = new WeatherHourly();
             weatherDaily = new WeatherDaily();
 
-            Forecast(lat,lon);
+            Forecast(lat, lon);
         }
 
         // TODO: parse alerts (alERt rCb SilNE WiAtRY)
@@ -213,9 +213,11 @@ namespace Weather
                     weatherDaily.list.Add(newForecast);
                 }
 
+                /*
                 Console.WriteLine($"no of hourly samples: {weatherHourly.list.Count}");
                 Console.WriteLine($"no of daily samples: {weatherDaily.list.Count}");
-
+                */
+                
                 ConvertForecast('c');
             }
         }
@@ -242,7 +244,10 @@ namespace Weather
                         // DAILY
                         foreach (var forecast in weatherDaily.list)
                         {
-                            forecast.temp = forecast.temp - 273.15f;
+                            forecast.temp_day = forecast.temp_day - 273.15f;
+                            forecast.temp_night = forecast.temp_night - 273.15f;
+                            forecast.temp_min = forecast.temp_min - 273.15f;
+                            forecast.temp_max = forecast.temp_max - 273.15f;
                         }
 
                         break;
@@ -262,7 +267,10 @@ namespace Weather
                         // DAILY
                         foreach (var forecast in weatherDaily.list)
                         {
-                            forecast.temp = 1.8f * (273.15f - forecast.temp) + 32f;
+                            forecast.temp_day = 1.8f * (273.15f - forecast.temp_day) + 32f;
+                            forecast.temp_night = 1.8f * (273.15f - forecast.temp_night) + 32f;
+                            forecast.temp_min = 1.8f * (273.15f - forecast.temp_min) + 32f;
+                            forecast.temp_max = 1.8f * (273.15f - forecast.temp_max) + 32f;
                         }
 
                         break;
