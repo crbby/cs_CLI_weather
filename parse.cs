@@ -113,7 +113,11 @@ namespace Weather
 
                 }while(loop);
 
-                Weather.Forecast(lat,lon);
+                // i'd love for forecast to be static
+                // but it it really did not make much sense 
+                // yeah im not following func.prog. princibles
+                // : (
+                var forecast = new Weather(lat,lon);
 
             }
         }
