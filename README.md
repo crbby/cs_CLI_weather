@@ -43,6 +43,10 @@ weather -l "LOCATION" -t 'TYPE' -u 'UNITS'
 Use weather --help for more info
 ```
 
+## TODOS:
+- implement hourly/daily/monthly forecast UI
+- compile linux binaries
+
 ## Used libraries:
 
 |Name               |NuGet                                                  |
